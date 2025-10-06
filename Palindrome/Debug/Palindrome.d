@@ -1,0 +1,1 @@
+Palindrome.o: ../Palindrome.cpp
