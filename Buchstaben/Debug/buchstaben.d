@@ -1,0 +1,1 @@
+buchstaben.o: ../buchstaben.cpp
