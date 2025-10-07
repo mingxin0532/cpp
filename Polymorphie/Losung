@@ -1,0 +1,21 @@
+There three classes, A,B,C
+The classed from a inheritance:C inherits from B, C inherits from A
+
+a:
+30 create an object a of class A, call f function
+	out:A.f
+31 create an object b of class B, call g function
+	out:B.g
+32 create an object of class A, call g function
+	out:C.g
+
+b
+
+34 do not compile
+	try so assign an object of base class A to an object of derived class B
+35	object a1 of class A is constructed by copying the B object;
+	out:A.f
+36 same as 35
+37 Polymorphie
+	create a pointer to the base class A* and set this point to the object of deroved class B
+	out:B.f

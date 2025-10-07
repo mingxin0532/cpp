@@ -1,34 +1,30 @@
 #include "Flaschen.h"
-#include <iostream>
 #include <string>
+#include <iostream>
 
-Flasche::Flasche() : _dVolumen(0.0), _sMaterial("") {}
 
-Flasche::Flasche(double dVolumen, std::string sMaterial): _dVolumen(dVolumen), _sMaterial(sMaterial) {}
-
-Flasche::~Flasche() {}
-
-double Flasche::getVolumen() const {
-    return _dVolumen;
+flaschen::flaschen() {
+}
+flaschen::~flaschen() {
 }
 
-void Flasche::setVolumen(double volumen) {
-    _dVolumen = volumen;
+double flaschen::getdVolumen() {
+	return dVolumen;
 }
-
-std::string Flasche::getMaterial() const {
-    return _sMaterial;
+std::string flaschen::getsMaterial() {
+	return sMaterial;
 }
-
-void Flasche::setMaterial(std::string material) {
-    _sMaterial = material;
+bool flaschen::setdVolumen(double volumen) {
+	dVolumen = volumen;
 }
-
-void Flasche::printBottle() const {
-    std::cout << "Flasche volumen: " << _dVolumen << "L, Material: " << _sMaterial << std::endl;
+bool flaschen::setsMaterial(std::string Material) {
+	sMaterial = Material;
 }
-
-void Flasche::adoptFlasche(const Flasche& Flasche2) {
-    this->_dVolumen = Flasche2._dVolumen;
-    this->_sMaterial = Flasche2._sMaterial;
+void flaschen::printFlasche(flaschen thisflasche){
+	std::cout<< "Volumen:"<< thisflasche.getdVolumen()<<"Liert"<<std::endl;
+	std::cout<<"Material:"<<thisflasche.getsMaterial()<<std::endl;
+}
+void flaschen::adoptFlasche(flaschen& anotherFlasche){
+	dVolumen = anotherFlasche.getdVolumen();
+	sMaterial = anotherFlasche.getsMaterial();
 }

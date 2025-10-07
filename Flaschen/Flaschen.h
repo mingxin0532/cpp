@@ -1,27 +1,21 @@
-#ifndef FLASCHEN_H
-#define FLASCHEN_H
-
 #include <string>
 
-class Flasche {
-public:
-    Flasche();
-    Flasche(double volumen, std::string material);
-    ~Flasche();
-
-    double getVolumen() const;
-    std::string getMaterial() const;
-
-    void setVolumen(double volumen);
-    void setMaterial(std::string material);
-
-    void printBottle() const;
-    
-    void adoptFlasche(const Flasche& Flasche2);
-
+class flaschen
+{
 private:
-    double _dVolumen;
-    std::string _sMaterial;
+	double dVolumen;
+	std::string sMaterial;
+
+public:
+	flaschen();
+	~flaschen();
+	double getdVolumen();
+	bool setdVolumen(double volumen);
+	std::string getsMaterial();
+	bool setsMaterial(std::string Material);
+
+	void printFlasche(flaschen thisflasche);
+	void adoptFlasche(flaschen& anotherFlasche);
+
 };
 
-#endif // FLASCHEN_H
