@@ -1,0 +1,24 @@
+//.cpp
+
+bool Maneuver::isRunning(){
+	return bIsRunning;
+}
+
+void Maneuver::Stop(){
+	bIsRunning = false;
+}
+
+void Maneuver::Start(){
+	if(!CoordList.empty()){
+
+	iter = CoordList.begin();
+	bIsRunning = true;
+	}else{
+	bIsRunning = false;
+	}
+
+}
+
+void Maneuver::Proceed(){
+	bIsRunning = true;
+}
