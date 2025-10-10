@@ -14,6 +14,10 @@ private:
 	PIDcontroller motorR;
 	PIDcontroller motorL;
 
+	int iMicros[2];
+	double sollVelocity[2];
+	double isVelocity[2];
+
 	bool bIsActive;
 public:
 	static RobotControl* transferPointer;

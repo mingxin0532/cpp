@@ -8,21 +8,24 @@ CPP_SRCS += \
 ../src/Maneuver.cpp \
 ../src/PIDController.cpp \
 ../src/PosEstimation.cpp \
-../src/RobotControl.cpp 
+../src/RobotControl.cpp \
+../src/main.cpp 
 
 OBJS += \
 ./src/InterfaceSIM.o \
 ./src/Maneuver.o \
 ./src/PIDController.o \
 ./src/PosEstimation.o \
-./src/RobotControl.o 
+./src/RobotControl.o \
+./src/main.o 
 
 CPP_DEPS += \
 ./src/InterfaceSIM.d \
 ./src/Maneuver.d \
 ./src/PIDController.d \
 ./src/PosEstimation.d \
-./src/RobotControl.d 
+./src/RobotControl.d \
+./src/main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

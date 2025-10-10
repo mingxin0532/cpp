@@ -95,5 +95,95 @@ void Maneuver::LogList(std::string sDatei){
 	}
 }
 
+void Maneuver::CalcManeuverSpeed(double dX, double dY, double dW){
+
+	double x_akt = dX;
+	double y_akt = dY;
+	double w_akt = dW;
+
+	double x_soll = iter->dX;
+	double y_soll = iter->dY;
+
+	double e_x = x_soll- x_akt;
+	double e_y = y_soll- y_akt;
+
+	dPosDifference = sqrt(e_x * e_x + e_y * e_y);
+
+	if(iter == Coordlist.end()){
+		Stop();
+		return;
+	}
+	//1.
+	if(dPosDifference < 0.02){
+		iter++;
+		if(iter == Coordlist.end()){
+			Stop();
+			return;
+		}
+	}
+
+	//3.
+	double phi = std::atan2(e_y, e_x);
+	//4.
+	double e_phi = phi - w_akt;
+	//5.
+	while(e_phi > M_PI){
+		e_phi -= 2.0 * M_PI;
+	}
+	while(e_phi <= -M_PI){
+		e_phi += 2.0 * M_PI;
+	}
+	//6.
+	int factor = 2;
+	double dRot = e_phi * factor;
+
+	if(dRot > 0.5)	dRot = 0.5;
+	if(dRot < -0.5)	dRot = -0.5;
+
+	//7.
+	double dTra = iter->dV;
+
+	//8.
+	if(dTra * dRot > 0.0){
+		if(dTra * dRot > dMaxSpeed){dTra = dMaxSpeed - dRot;}
+		if(dTra * dRot < dMaxSpeed){dTra = -dMaxSpeed - dRot;}
+	}
+	else if(dTra * dRot < 0.0){
+		if(dTra * dRot > dMaxSpeed){dTra = dMaxSpeed + dRot;}
+		if(dTra * dRot < dMaxSpeed){dTra = -dMaxSpeed + dRot;}
+	}
+
+	//9.
+	adWishSpeed[0] = dTra + dRot;
+	adWishSpeed[1] = dTra - dRot;
+}
+
+
+double* Maneuver::GetManeuverSpeed(){
+	return adWishSpeed;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
