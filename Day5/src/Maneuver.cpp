@@ -8,7 +8,7 @@
 #include "../includes/Maneuver.h"
 
 Maneuver::Maneuver():
-	bIsrunning(false),
+	bIsRunning(false),
 	dMaxSpeed(0.5),
 	dPosDifference(0.0)
 {
@@ -17,7 +17,7 @@ Maneuver::Maneuver():
 }
 
 void Maneuver::CalcCircle(double Radius, double speed, double dt){
-	Coordlist.clear();
+	CoordList.clear();
 
 //	double T = 2.0 * M_PI * Radius / speed;
 //	int num_counter = static_cast<int> (T/dt);
@@ -28,12 +28,12 @@ void Maneuver::CalcCircle(double Radius, double speed, double dt){
 		point.dY = Radius * (1 - std::cos(counter * speed/Radius * dt));
 		point.dV = speed;
 
-		Coordlist.push_back(point);
+		CoordList.push_back(point);
 	}
 }
 
 void Maneuver::CalcEight(double Radius, double speed, double dt){
-	Coordlist.clear();
+	CoordList.clear();
 
 //	double T = 2.0 * M_PI * Radius / speed;
 //	int num_counter = static_cast<int> (T/dt);
@@ -44,7 +44,7 @@ void Maneuver::CalcEight(double Radius, double speed, double dt){
 		point.dY = Radius * (1 - std::cos(counter * speed/Radius * dt));
 		point.dV = speed;
 
-		Coordlist.push_back(point);
+		CoordList.push_back(point);
 	}
 
 
@@ -54,7 +54,7 @@ void Maneuver::CalcEight(double Radius, double speed, double dt){
 		point.dY = - Radius * (1 - std::cos(counter * speed/Radius * dt));
 		point.dV = speed;
 
-		Coordlist.push_back(point);
+		CoordList.push_back(point);
 	}
 }
 
@@ -63,7 +63,7 @@ void Maneuver::LogList(std::string sDatei){
 
 	if(LogFile.is_open()){
 
-		for(const auto& coord : Coordlist){
+		for(const auto& coord : CoordList){
 			LogFile<< coord.dX <<"\t"<<coord.dY<<"\n";
 		}
 		LogFile.close();
@@ -73,6 +73,115 @@ void Maneuver::LogList(std::string sDatei){
 		std::cout<< "Unable to open file"<< sDatei<<std::endl;
 	}
 }
+
+bool Maneuver::isRunning(){
+	return bIsRunning;
+}
+
+void Maneuver::Stop(){
+	bIsRunning = false;
+}
+
+void Maneuver::Start(){
+	if(!CoordList.empty()){
+
+	iter = CoordList.begin();
+	bIsRunning = true;
+	}else{
+	bIsRunning = false;
+	}
+
+}
+
+void Maneuver::Proceed(){
+	bIsRunning = true;
+}
+
+void Maneuver::CalcManeuverSpeed(double dX, double dY, double dW){
+
+	double x_akt = dX;
+	double y_akt = dY;
+	double w_akt = dW;
+
+	double x_soll = iter->dX;
+	double y_soll = iter->dY;
+
+	double e_x = x_soll- x_akt;
+	double e_y = y_soll- y_akt;
+
+	dPosDifference = sqrt(e_x * e_x + e_y * e_y);
+
+	if(iter == CoordList.end()){
+		Stop();
+		return;
+	}
+	//1.
+	if(dPosDifference < 0.02){
+		iter++;
+		if(iter == CoordList.end()){
+			Stop();
+			return;
+		}
+	}
+
+	//3.
+	double phi = std::atan2(e_y, e_x);
+	//4.
+	double e_phi = phi - w_akt;
+	//5.
+	while(e_phi > M_PI){
+		e_phi -= 2.0 * M_PI;
+	}
+	while(e_phi <= -M_PI){
+		e_phi += 2.0 * M_PI;
+	}
+	//6.
+	int factor = 2;
+	double dRot = e_phi * factor;
+
+	if(dRot > 0.5)	dRot = 0.5;
+	if(dRot < -0.5)	dRot = -0.5;
+
+	//7.
+	double dTra = iter->dV;
+
+	//8.
+	if(dTra * dRot > 0.0){
+		if(dTra * dRot > dMaxSpeed){dTra = dMaxSpeed - dRot;}
+		if(dTra * dRot < dMaxSpeed){dTra = -dMaxSpeed - dRot;}
+	}
+	else if(dTra * dRot < 0.0){
+		if(dTra * dRot > dMaxSpeed){dTra = dMaxSpeed + dRot;}
+		if(dTra * dRot < dMaxSpeed){dTra = -dMaxSpeed + dRot;}
+	}
+
+	//9.
+	adWishSpeed[0] = dTra + dRot;
+	adWishSpeed[1] = dTra - dRot;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
