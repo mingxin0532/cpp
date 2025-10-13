@@ -3,12 +3,13 @@
 #include <iostream>
 #include <ncurses.h>
 
-	RobotControl* RobotControl::transferPointer = nullptr;
+	RobotControl* RobotControl::transferPointer ;
 
-	RobotControl::RobotControl(){
-		interface.Initialize(0.04,&transferfunction);
+	RobotControl::RobotControl():motorR(500,100,0,0.04),motorL(500,100,0,0.04){
 		transferPointer = this;
-		bIsActive = true;
+		interface.Initialize(0.04,&RobotControl::transferfunction);
+
+		bIsActive = false;
 	}
 	RobotControl::~RobotControl(){
 
@@ -20,6 +21,7 @@
 		return bIsActive;
 	}
 	void RobotControl::step(){
+
 			double* pInput = interface.GetInput();
 			isVelocity[0] = pInput[0];
 			isVelocity[1] = pInput[1];
@@ -48,15 +50,15 @@
 
 			for(int i = 0; i<2; ++i){
 				if (iMicros[i] > 2000) iMicros[i] = 2000;
-					if (iMicros[i] < 1000) iMicros[i] = 1000;
+				if (iMicros[i] < 1000) iMicros[i] = 1000;
 			}
 
 			interface.SetOutputs(iMicros);
-			printw("\n Links PWM: %d us \n", iMicros[0]);
-			printw("Rechts PWM %d us \n", iMicros[1]);
+			//printw("\n Links PWM: %d us \n", iMicros[0]);
+			//printw("Rechts PWM %d us \n", iMicros[1]);
 
-			printw("\n Links speed: %.3f m/s", isVelocity[0]);
-			printw("Rechts speed %.3f m/s", isVelocity[1]);
+			//printw("\n Links speed: %.3f m/s", isVelocity[0]);
+		//	printw("Rechts speed %.3f m/s", isVelocity[1]);
 
 		}
 	void RobotControl::Communicate(){
@@ -78,19 +80,21 @@
 			std::cout << "unavailable input, "<<std::endl;
 		}
 		//reset position
+		sigprocmask(SIG_UNBLOCK,&interface.mask,nullptr);
+		//get parameter
 		posEstimation.Reset();
 		//start ncurses
 		initscr();
 		nodelay(stdscr,TRUE);
 		noecho();
 		curs_set(0);
-		//sigprocmask(SIG_UNBLOCK,&m_Interface.mask,nullptr);
+
 		//manuver control
 		bool quitLoop = false;
 		while(!quitLoop){
-			clear();
-			printw(0,0,"s-start; p-stop; o-proceed; q-quit");
-			printw(0,0,"Status:%s",maneuver.isRunning()? "works":"stop" );
+
+			mvprintw(0,0,"s-start; p-stop; o-proceed; q-quit");
+			mvprintw(2,0,"Status:%s",maneuver.isRunning()? "works":"stop" );
 			refresh();
 
 			int key = getch();
@@ -111,4 +115,5 @@
 			}
 		}
 		endwin();
+		sigprocmask(SIG_BLOCK,&interface.mask,nullptr);
 	}
